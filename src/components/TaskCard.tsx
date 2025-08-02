@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { CheckCircle, Undo2, Trash2 } from "lucide-react";
 
 type Task = {
   id: string;
@@ -44,26 +45,39 @@ export default function TaskCard({
 
   return (
     <div
-      className={`p-4 rounded shadow ${
-        task.completed ? "bg-green-100" : "bg-white"
+      className={`p-4 rounded-xl border shadow-sm transition-all ${
+        task.completed
+          ? "bg-green-50 border-green-200"
+          : "bg-white border-gray-200"
       }`}
     >
-      <h3 className="font-bold">{task.title}</h3>
-      {task.content && <p>{task.content}</p>}
-      <div className="mt-2 flex gap-4">
+      <h3 className="text-lg font-semibold text-gray-800 mb-1">{task.title}</h3>
+      {task.content && <p className="text-gray-600 text-sm">{task.content}</p>}
+
+      <div className="mt-4 flex items-center justify-between">
         <button
           disabled={loading}
           onClick={toggleCompleted}
-          className="text-sm text-blue-600"
+          className="flex items-center gap-1 text-sm text-blue-600 hover:underline disabled:opacity-50"
         >
-          {task.completed ? "Marcar como pendiente" : "Marcar como completada"}
+          {task.completed ? (
+            <>
+              <Undo2 size={16} /> <span>Pendiente</span>
+            </>
+          ) : (
+            <>
+              <CheckCircle size={16} /> <span>Completar</span>
+            </>
+          )}
         </button>
+
         <button
           disabled={loading}
           onClick={deleteTask}
-          className="text-sm text-red-600"
+          className="flex items-center gap-1 text-sm text-red-600 hover:underline disabled:opacity-50"
         >
-          Eliminar
+          <Trash2 size={16} />
+          <span>Eliminar</span>
         </button>
       </div>
     </div>

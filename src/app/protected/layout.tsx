@@ -1,24 +1,15 @@
-import { ReactNode } from "react";
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import ProtectedNav from "@/components/ProtectedNav";
+import ClientLayout from "@/components/layout/ClientLayout";
 
 export default async function ProtectedLayout({
   children,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+  if (!session) redirect("/");
 
-  if (!session) {
-    redirect("/"); // si no está logueado, redirige a login
-  }
-
-  return (
-    <>
-      <ProtectedNav />
-      <main className="p-4">{children}</main>
-    </>
-  );
+  return <ClientLayout user={session.user}>{children}</ClientLayout>;
 }

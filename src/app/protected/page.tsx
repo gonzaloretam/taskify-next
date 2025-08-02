@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import TaskCard from "@/components/TaskCard";
+import { Plus } from "lucide-react";
 
 type Task = {
   id: string;
@@ -40,43 +41,58 @@ export default function Home() {
   };
 
   return (
-    <main className="max-w-xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Tus tareas</h1>
+    <main className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+          📝 Tus Tareas
+        </h1>
 
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Título"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="border p-2 w-full mb-2"
-        />
-        <textarea
-          placeholder="Descripción (opcional)"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="border p-2 w-full mb-2"
-        />
-        <button
-          onClick={createTask}
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Agregar tarea
-        </button>
+        {/* Formulario */}
+        <div className="bg-white shadow-lg rounded-xl p-6 mb-10">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Crear nueva tarea
+          </h2>
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Título"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full bg-white text-gray-800 placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <textarea
+              placeholder="Descripción (opcional)"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="w-full bg-white text-gray-800 placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={createTask}
+              disabled={loading}
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-md flex items-center justify-center gap-2 transition disabled:opacity-50"
+            >
+              <Plus size={18} /> {loading ? "Agregando..." : "Agregar tarea"}
+            </button>
+          </div>
+        </div>
+
+        {/* Lista de tareas */}
+        <section className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {tasks.length === 0 && (
+            <p className="text-gray-500 col-span-full text-center">
+              No tienes tareas aún.
+            </p>
+          )}
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onUpdate={fetchTasks}
+              onDelete={fetchTasks}
+            />
+          ))}
+        </section>
       </div>
-
-      <section className="space-y-4">
-        {tasks.length === 0 && <p>No tienes tareas.</p>}
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onUpdate={fetchTasks}
-            onDelete={fetchTasks}
-          />
-        ))}
-      </section>
     </main>
   );
 }
