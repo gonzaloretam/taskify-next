@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ListTodo, LogOut } from "lucide-react";
+import { LayoutDashboard, ListTodo, LogOut, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const navItems = [
   { name: "Dashboard", href: "/protected", icon: LayoutDashboard },
   { name: "Tareas", href: "/protected/tasks", icon: ListTodo },
+  { name: "Perfil", href: "/protected/profile", icon: User },
 ];
 
 export default function Sidebar({
