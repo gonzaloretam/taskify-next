@@ -1,46 +1,69 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+import { usePathname } from "next/navigation";
+import { AppSidebar } from "@/components/app-sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
+// Función para convertir el segmento a título
+function formatPath(path: string): string {
+  const segments = path.split("/").filter(Boolean); // elimina vacío inicial
+  const last = segments[segments.length - 1] || "dashboard";
+  return last.charAt(0).toUpperCase() + last.slice(1);
+}
 
 export default function ClientLayout({
   children,
-  user,
 }: {
   children: React.ReactNode;
-  user: { name?: string; email?: string };
 }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Cierra overlay al cambiar ruta
-  useEffect(() => {
-    const handleRouteChange = () => setSidebarOpen(false);
-    window.addEventListener("popstate", handleRouteChange);
-    return () => window.removeEventListener("popstate", handleRouteChange);
-  }, []);
+  const pathname = usePathname();
+  const currentPage = formatPath(pathname);
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-gray-100 text-gray-800">
-      <Sidebar
-        collapsed={collapsed}
-        sidebarOpen={sidebarOpen}
-        onCloseMobileSidebar={() => setSidebarOpen(false)}
-      />
+    <SidebarProvider>
+      <AppSidebar />
 
-      <div className={`flex flex-col flex-1 transition-all duration-300`}>
-        <Header
-          user={user}
-          toggleSidebar={() => setCollapsed((prev) => !prev)}
-          openMobileSidebar={() => setSidebarOpen(true)}
-        />
+      <SidebarInset>
+        {/* Header */}
+        <header className="flex h-16 shrink-0 items-center gap-2 px-4 border-b bg-background">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="/protected/dashboard">
+                  Inicio
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{currentPage}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
 
-        {/* Área scrollable */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-4xl mx-auto">{children}</div>
+        {/* Contenido scrollable */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="max-w-6xl mx-auto">{children}</div>
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
