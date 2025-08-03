@@ -1,7 +1,18 @@
 "use client";
 import { useState } from "react";
 import { CheckCircle, Undo2, Trash2 } from "lucide-react";
-
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 type Task = {
   id: string;
   title: string;
@@ -19,6 +30,7 @@ export default function TaskCard({
   onDelete: () => void;
 }) {
   const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const toggleCompleted = async () => {
     setLoading(true);
@@ -31,8 +43,7 @@ export default function TaskCard({
     onUpdate();
   };
 
-  const deleteTask = async () => {
-    if (!confirm("¿Eliminar tarea?")) return;
+  const confirmDelete = async () => {
     setLoading(true);
     await fetch("/api/tasks", {
       method: "DELETE",
@@ -40,7 +51,17 @@ export default function TaskCard({
       body: JSON.stringify({ id: task.id }),
     });
     setLoading(false);
+    setShowConfirm(false);
     onDelete();
+    toast.success("Se ha eliminado una tarea.", {
+      description: new Date().toLocaleString("es-CL", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    });
   };
 
   return (
@@ -71,14 +92,32 @@ export default function TaskCard({
           )}
         </button>
 
-        <button
-          disabled={loading}
-          onClick={deleteTask}
-          className="flex items-center gap-1 text-sm text-red-600 hover:underline disabled:opacity-50"
-        >
-          <Trash2 size={16} />
-          <span>Eliminar</span>
-        </button>
+        <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
+          <AlertDialogTrigger asChild>
+            <button
+              disabled={loading}
+              className="flex items-center gap-1 text-sm text-red-600 hover:underline disabled:opacity-50"
+            >
+              <Trash2 size={16} />
+              <span>Eliminar</span>
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Eliminar tarea?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta acción no se puede deshacer. La tarea se eliminará
+                permanentemente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete} disabled={loading}>
+                {loading ? "Eliminando..." : "Eliminar"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
