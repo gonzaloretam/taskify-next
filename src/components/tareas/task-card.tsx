@@ -34,7 +34,7 @@ export default function TaskCard({
 
   const toggleCompleted = async () => {
     setLoading(true);
-    await fetch("/api/tasks", {
+    await fetch("/api/protected/tasks", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: task.id, completed: !task.completed }),
@@ -45,7 +45,7 @@ export default function TaskCard({
 
   const confirmDelete = async () => {
     setLoading(true);
-    await fetch("/api/tasks", {
+    await fetch("/api/protected/tasks", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: task.id }),

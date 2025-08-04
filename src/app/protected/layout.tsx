@@ -13,7 +13,7 @@ export default async function ProtectedLayout({
   if (!session) redirect("/login");
 
   return (
-    <ClientLayout user={session.user}>
+    <ClientLayout>
       {children}
 
       <Toaster closeButton richColors />
