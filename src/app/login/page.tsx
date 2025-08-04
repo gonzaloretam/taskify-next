@@ -3,10 +3,10 @@
 import { useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { GalleryVerticalEnd, Github } from "lucide-react";
+import { GalleryVerticalEnd } from "lucide-react";
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -39,13 +39,31 @@ export default function LoginPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs space-y-4">
             <h1 className="text-3xl font-bold text-gray-900">Inicia sesión</h1>
-            <p className="text-gray-500">Usa tu cuenta de GitHub para entrar</p>
+            <p className="text-gray-500">Usa tu cuenta para entrar</p>
 
+            {/* Botón Google */}
+            <button
+              onClick={() => signIn("google")}
+              className="w-full border border-gray-300 hover:bg-gray-100 text-gray-700 py-3 rounded-lg flex items-center justify-center gap-2 transition"
+            >
+              <img
+                src="/icon-google.svg"
+                alt="Google logo"
+                className="w-5 h-5"
+              />
+              Entrar con Google
+            </button>
+
+            {/* Botón GitHub */}
             <button
               onClick={() => signIn("github")}
               className="w-full bg-gray-900 hover:bg-black text-white py-3 rounded-lg flex items-center justify-center gap-2 transition"
             >
-              <Github size={20} />
+              <img
+                src="/icon-github.svg"
+                alt="GitHub logo"
+                className="w-5 h-5"
+              />
               Entrar con GitHub
             </button>
 
@@ -65,7 +83,7 @@ export default function LoginPage() {
       <div className="bg-muted relative hidden lg:block">
         <img
           src="/home.jpg"
-          alt="Image"
+          alt="Imagen"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>
