@@ -18,7 +18,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "./team-switcher";
+import { TeamSwitcher } from "../team-switcher";
 
 const navLinks = [
   {
